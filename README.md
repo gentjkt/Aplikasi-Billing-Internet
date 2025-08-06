@@ -1,4 +1,4 @@
-# 🌐 Aplikasi Billing Internet
+# 🌐 Aplikasi Tagihan Internet
 
 Sistem manajemen billing internet multi-pengguna yang komprehensif dengan integrasi Google Sheets untuk penyimpanan data.
 
@@ -239,5 +239,6 @@ Untuk dukungan dan pertanyaan:
 - Frontend responsif
 
 ---
+
 
 **Catatan**: Pastikan untuk mengkonfigurasi kredensial Google Sheets API dan mengupdate variabel environment sebelum menjalankan aplikasi. 
