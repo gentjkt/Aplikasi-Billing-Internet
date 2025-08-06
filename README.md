@@ -1,9 +1,3 @@
-# Aplikasi-Billing-Internet
-Biling tagihan RTRW Net
-
-
-
-
 # 🌐 Aplikasi Billing Internet
 
 Sistem manajemen billing internet multi-pengguna yang komprehensif dengan integrasi Google Sheets untuk penyimpanan data.

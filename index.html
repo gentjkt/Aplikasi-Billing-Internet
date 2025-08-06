@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Billing App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .nav button {
+            padding: 10px 20px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .nav button:hover {
+            background: #0056b3;
+        }
+        .nav button.active {
+            background: #28a745;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background: #f8f9fa;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 Internet Billing App</h1>
+            <p>Manage your internet billing system</p>
+        </div>
+
+        <!-- Login Section -->
+        <div id="loginSection">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+
+        <!-- Main App -->
+        <div id="appSection" class="hidden">
+            <div class="nav">
+                <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('customers')">Customers</button>
+                <button class="nav-btn" onclick="showSection('packages')">Packages</button>
+                <button class="nav-btn" onclick="showSection('bills')">Bills</button>
+                <button class="nav-btn" onclick="showSection('payments')">Payments</button>
+                <button class="btn btn-danger" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Dashboard -->
+            <div id="dashboard" class="section active">
+                <h2>Dashboard</h2>
+                <div id="dashboardContent">
+                    <p>Loading dashboard data...</p>
+                </div>
+            </div>
+
+            <!-- Customers -->
+            <div id="customers" class="section">
+                <h2>Customers</h2>
+                <button class="btn btn-primary" onclick="showCustomerForm()">Add Customer</button>
+                <div id="customerForm" class="hidden">
+                    <h3>Add New Customer</h3>
+                    <form id="newCustomerForm">
+                        <div class="form-group">
+                            <label for="customerName">Name:</label>
+                            <input type="text" id="customerName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerEmail">Email:</label>
+                            <input type="email" id="customerEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone:</label>
+                            <input type="tel" id="customerPhone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Address:</label>
+                            <textarea id="customerAddress" name="address" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Customer</button>
+                        <button type="button" class="btn btn-danger" onclick="hideCustomerForm()">Cancel</button>
+                    </form>
+                </div>
+                <div id="customersList"></div>
+            </div>
+
+            <!-- Packages -->
+            <div id="packages" class="section">
+                <h2>Packages</h2>
+                <button class="btn btn-primary" onclick="showPackageForm()">Add Package</button>
+                <div id="packageForm" class="hidden">
+                    <h3>Add New Package</h3>
+                    <form id="newPackageForm">
+                        <div class="form-group">
+                            <label for="packageName">Name:</label>
+                            <input type="text" id="packageName" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packageSpeed">Speed (Mbps):</label>
+                            <input type="number" id="packageSpeed" name="speed" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packagePrice">Price:</label>
+                            <input type="number" id="packagePrice" name="price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="packageDescription">Description:</label>
+                            <textarea id="packageDescription" name="description"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Package</button>
+                        <button type="button" class="btn btn-danger" onclick="hidePackageForm()">Cancel</button>
+                    </form>
+                </div>
+                <div id="packagesList"></div>
+            </div>
+
+            <!-- Bills -->
+            <div id="bills" class="section">
+                <h2>Bills</h2>
+                <button class="btn btn-primary" onclick="showBillForm()">Generate Bills</button>
+                <div id="billForm" class="hidden">
+                    <h3>Generate Monthly Bills</h3>
+                    <form id="generateBillsForm">
+                        <div class="form-group">
+                            <label for="billMonth">Month:</label>
+                            <select id="billMonth" name="month" required>
+                                <option value="">Select Month</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="billYear">Year:</label>
+                            <input type="number" id="billYear" name="year" min="2020" max="2030" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Bills</button>
+                        <button type="button" class="btn btn-danger" onclick="hideBillForm()">Cancel</button>
+                    </form>
+                </div>
+                <div id="billsList"></div>
+            </div>
+
+            <!-- Payments -->
+            <div id="payments" class="section">
+                <h2>Payments</h2>
+                <div id="paymentsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+        const API_BASE = 'http://localhost:5000/api';
+
+        // Check authentication
+        if (token) {
+            showApp();
+        } else {
+            showLogin();
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+        }
+
+        function showApp() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('appSection').classList.remove('hidden');
+            loadDashboard();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            showLogin();
+        }
+
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    token = result.token;
+                    localStorage.setItem('token', token);
+                    showApp();
+                } else {
+                    alert('Login failed: ' + result.error);
+                }
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
+        });
+
+        // Navigation
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(sectionName).classList.add('active');
+            event.target.classList.add('active');
+
+            switch(sectionName) {
+                case 'dashboard': loadDashboard(); break;
+                case 'customers': loadCustomers(); break;
+                case 'packages': loadPackages(); break;
+                case 'bills': loadBills(); break;
+                case 'payments': loadPayments(); break;
+            }
+        }
+
+        // API helper
+        async function apiCall(endpoint, options = {}) {
+            const url = `${API_BASE}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                ...options
+            };
+
+            try {
+                const response = await fetch(url, config);
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('API call failed:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Dashboard
+        async function loadDashboard() {
+            try {
+                const overview = await apiCall('/dashboard/overview');
+                if (overview.success) {
+                    document.getElementById('dashboardContent').innerHTML = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+                                <h3>${overview.data.totalCustomers || 0}</h3>
+                                <p>Total Customers</p>
+                            </div>
+                            <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; text-align: center;">
+                                <h3>${overview.data.totalBills || 0}</h3>
+                                <p>Total Bills</p>
+                            </div>
+                            <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+                                <h3>$${overview.data.totalRevenue || 0}</h3>
+                                <p>Total Revenue</p>
+                            </div>
+                            <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+                                <h3>${overview.data.pendingBills || 0}</h3>
+                                <p>Pending Bills</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load dashboard:', error);
+            }
+        }
+
+        // Customers
+        async function loadCustomers() {
+            try {
+                const result = await apiCall('/customers');
+                if (result.success) {
+                    displayCustomers(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to load customers:', error);
+            }
+        }
+
+        function displayCustomers(customers) {
+            const container = document.getElementById('customersList');
+            if (!customers || customers.length === 0) {
+                container.innerHTML = '<p>No customers found.</p>';
+                return;
+            }
+
+            const table = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${customers.map(customer => `
+                            <tr>
+                                <td>${customer.name}</td>
+                                <td>${customer.email}</td>
+                                <td>${customer.phone}</td>
+                                <td>${customer.address}</td>
+                                <td>${customer.status}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function showCustomerForm() {
+            document.getElementById('customerForm').classList.remove('hidden');
+        }
+
+        function hideCustomerForm() {
+            document.getElementById('customerForm').classList.add('hidden');
+            document.getElementById('newCustomerForm').reset();
+        }
+
+        // Packages
+        async function loadPackages() {
+            try {
+                const result = await apiCall('/packages');
+                if (result.success) {
+                    displayPackages(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to load packages:', error);
+            }
+        }
+
+        function displayPackages(packages) {
+            const container = document.getElementById('packagesList');
+            if (!packages || packages.length === 0) {
+                container.innerHTML = '<p>No packages found.</p>';
+                return;
+            }
+
+            const table = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Speed</th>
+                            <th>Price</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${packages.map(pkg => `
+                            <tr>
+                                <td>${pkg.name}</td>
+                                <td>${pkg.speed} Mbps</td>
+                                <td>$${pkg.price}</td>
+                                <td>${pkg.description || '-'}</td>
+                                <td>${pkg.isActive ? 'Active' : 'Inactive'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function showPackageForm() {
+            document.getElementById('packageForm').classList.remove('hidden');
+        }
+
+        function hidePackageForm() {
+            document.getElementById('packageForm').classList.add('hidden');
+            document.getElementById('newPackageForm').reset();
+        }
+
+        // Bills
+        async function loadBills() {
+            try {
+                const result = await apiCall('/bills');
+                if (result.success) {
+                    displayBills(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to load bills:', error);
+            }
+        }
+
+        function displayBills(bills) {
+            const container = document.getElementById('billsList');
+            if (!bills || bills.length === 0) {
+                container.innerHTML = '<p>No bills found.</p>';
+                return;
+            }
+
+            const table = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Month/Year</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bills.map(bill => `
+                            <tr>
+                                <td>${bill.customerName || 'N/A'}</td>
+                                <td>${bill.month}/${bill.year}</td>
+                                <td>$${bill.amount}</td>
+                                <td>${new Date(bill.dueDate).toLocaleDateString()}</td>
+                                <td>${bill.status}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        function showBillForm() {
+            document.getElementById('billForm').classList.remove('hidden');
+        }
+
+        function hideBillForm() {
+            document.getElementById('billForm').classList.add('hidden');
+            document.getElementById('generateBillsForm').reset();
+        }
+
+        // Payments
+        async function loadPayments() {
+            try {
+                const result = await apiCall('/payments');
+                if (result.success) {
+                    displayPayments(result.data);
+                }
+            } catch (error) {
+                console.error('Failed to load payments:', error);
+            }
+        }
+
+        function displayPayments(payments) {
+            const container = document.getElementById('paymentsList');
+            if (!payments || payments.length === 0) {
+                container.innerHTML = '<p>No payments found.</p>';
+                return;
+            }
+
+            const table = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${payments.map(payment => `
+                            <tr>
+                                <td>${payment.customerName || 'N/A'}</td>
+                                <td>$${payment.amount}</td>
+                                <td>${payment.paymentMethod}</td>
+                                <td>${new Date(payment.paymentDate).toLocaleDateString()}</td>
+                                <td>${payment.status}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = table;
+        }
+
+        // Form submissions
+        document.getElementById('newCustomerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const result = await apiCall('/customers', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (result.success) {
+                    alert('Customer created successfully!');
+                    hideCustomerForm();
+                    loadCustomers();
+                } else {
+                    alert('Failed to create customer: ' + result.error);
+                }
+            } catch (error) {
+                alert('Failed to create customer: ' + error.message);
+            }
+        });
+
+        document.getElementById('newPackageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const result = await apiCall('/packages', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (result.success) {
+                    alert('Package created successfully!');
+                    hidePackageForm();
+                    loadPackages();
+                } else {
+                    alert('Failed to create package: ' + result.error);
+                }
+            } catch (error) {
+                alert('Failed to create package: ' + error.message);
+            }
+        });
+
+        document.getElementById('generateBillsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const result = await apiCall('/bills/generate', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+
+                if (result.success) {
+                    alert(`Generated ${result.data.length} bills successfully!`);
+                    hideBillForm();
+                    loadBills();
+                } else {
+                    alert('Failed to generate bills: ' + result.error);
+                }
+            } catch (error) {
+                alert('Failed to generate bills: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html> 
