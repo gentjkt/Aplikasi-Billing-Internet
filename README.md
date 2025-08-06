@@ -25,7 +25,7 @@ Sistem manajemen billing internet multi-pengguna yang komprehensif dengan integr
 
 1. **Clone repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/gentjkt/Aplikasi-Billing-Internet.git
    cd internet-billing-app
    ```
 
@@ -242,3 +242,4 @@ Untuk dukungan dan pertanyaan:
 
 
 **Catatan**: Pastikan untuk mengkonfigurasi kredensial Google Sheets API dan mengupdate variabel environment sebelum menjalankan aplikasi. 
+
